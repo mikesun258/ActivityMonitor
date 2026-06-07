@@ -1,9 +1,9 @@
 name: Build APK
 
-于:
+on:
   push:
-    分支: [ main ]
-  workflow_dispatch: # 支持手动点击运行
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -28,4 +28,3 @@ jobs:
         with:
           name: ActivityMonitor-APK
           path: app/build/outputs/apk/release/app-release.apk
-
