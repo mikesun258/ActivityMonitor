@@ -4,9 +4,11 @@
     <application
         android:allowBackup="true"
         android:label="ActivityMonitor"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        <!-- 添加下面两行 -->
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
 
-        <!-- Xposed/LSPosed 模块标识 -->
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
