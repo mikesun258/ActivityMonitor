@@ -32,7 +32,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             )
 
-            // 2. Hook Activity.onResume（参数顺序完全匹配 API）
+            // 2. Hook Activity.onResume
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
                 lpparam.classLoader,
@@ -48,7 +48,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             )
 
-            // 3. Hook Activity.onPause（参数顺序完全匹配 API）
+            // 3. Hook Activity.onPause
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
                 lpparam.classLoader,
