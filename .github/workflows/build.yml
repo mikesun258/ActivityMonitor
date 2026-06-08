@@ -21,8 +21,23 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      # 1. 配置 Gradle 镜像，解决下载超时
+      - name: Configure Gradle Mirror
+        run: |
+          sed -i 's|https://services.gradle.org/distributions/|https://mirrors.aliyun.com/maven/gradle/|g' gradle/wrapper/gradle-wrapper.properties
+
+      # 2. 添加 Gradle 缓存，避免重复下载依赖
+      - name: Cache Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+
+      # 3. 构建命令，增加超时参数
       - name: Build APK
-        run: ./gradlew clean assembleRelease --no-daemon --stacktrace
+        run: ./gradlew clean assembleRelease --no-daemon --stacktrace --timeout 180s
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
