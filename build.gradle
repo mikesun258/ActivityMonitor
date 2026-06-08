@@ -1,11 +1,11 @@
+// 仅保留 buildscript 部分，删除 allprojects 块（仓库已迁移到settings.gradle）
 buildscript {
     ext.kotlin_version = "1.9.0"
     repositories {
-        // GitHub 优先官方（快、稳）
+        // 仅保留插件依赖的仓库，不再定义项目依赖仓库
         google()
         mavenCentral()
-
-        // 国内镜像做备用（阿里 + 清华）
+        // 国内镜像加速
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://maven.aliyun.com/repository/central' }
         maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
@@ -17,20 +17,7 @@ buildscript {
     }
 }
 
-allprojects {
-    repositories {
-        // 同上：官方优先
-        google()
-        mavenCentral()
-
-        // 国内备用
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
-        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/maven-central' }
-    }
-}
-
+// 移除原有的 allprojects 块！
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
