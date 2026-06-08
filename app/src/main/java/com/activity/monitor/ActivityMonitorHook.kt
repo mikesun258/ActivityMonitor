@@ -15,7 +15,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
-            // Hook Activity.onCreate
+            // 1. Hook Activity.onCreate
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
                 lpparam.classLoader,
@@ -32,7 +32,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             )
 
-            // Hook Activity.onResume（修正了参数错误）
+            // 2. Hook Activity.onResume（已修正参数，添加了 lpparam.classLoader）
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
                 lpparam.classLoader,
@@ -48,7 +48,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             )
 
-            // Hook Activity.onPause
+            // 3. Hook Activity.onPause（已修正参数，添加了 lpparam.classLoader）
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
                 lpparam.classLoader,
