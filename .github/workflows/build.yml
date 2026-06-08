@@ -33,7 +33,6 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # 修正：删除了错误的 --timeout 参数
       - name: Build APK
         run: ./gradlew clean assembleRelease --no-daemon --stacktrace
 
