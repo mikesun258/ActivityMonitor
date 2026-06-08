@@ -1,0 +1,30 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        // 国内镜像加速
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/maven-central' }
+    }
+}
+
+dependencyResolutionManagement {
+    // 关键：统一仓库声明，禁止在build.gradle中额外定义repositories
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // 国内镜像加速
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/maven-central' }
+    }
+}
+
+// 项目名称，保持和你仓库一致
+rootProject.name = "ActivityMonitor"
+include ':app'
