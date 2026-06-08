@@ -1,18 +1,36 @@
 buildscript {
+    ext.kotlin_version = "1.9.0"
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/public' }
+        // GitHub 优先官方（快、稳）
         google()
+        mavenCentral()
+
+        // 国内镜像做备用（阿里 + 清华）
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/maven-central' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:8.1.0"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 allprojects {
     repositories {
-        maven { url 'https://maven.aliyun.com/repository/public' }
+        // 同上：官方优先
         google()
+        mavenCentral()
+
+        // 国内备用
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/google' }
+        maven { url 'https://mirrors.tuna.tsinghua.edu.cn/maven-central' }
     }
 }
 
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
