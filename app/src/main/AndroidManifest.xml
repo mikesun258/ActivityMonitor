@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="ActivityMonitor"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
-        <!-- Xposed模块标识 -->
+        <!-- Xposed/LSPosed 模块标识 -->
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
-
         <meta-data
             android:name="xposedname"
             android:value="ActivityMonitor" />
-
         <meta-data
             android:name="xposeddescription"
-            android:value="监听指定APP Activity启停，支持发送广播" />
-
+            android:value="监听APP Activity启停，发送对应广播" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
