@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.example.activitymonitor"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <application
         android:allowBackup="true"
@@ -9,12 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
+        <!-- Xposed 模块标识 -->
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
+
+        <meta-data
+            android:name="xposedname"
+            android:value="ActivityMonitor" />
+
         <meta-data
             android:name="xposeddescription"
             android:value="监听指定APP Activity启停，支持发送广播" />
+
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
@@ -22,4 +31,3 @@
     </application>
 
 </manifest>
-
