@@ -1,4 +1,4 @@
-package com.activity.monitor
+package com.mikesun258.activitymonitor
 
 import android.app.Activity
 import android.content.Intent
@@ -11,12 +11,14 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class ActivityMonitorHook : IXposedHookLoadPackage {
     private val TAG = "ActivityMonitor"
-    private val BROADCAST_ACTION = "com.activity.monitor.EVENT"
+    private val BROADCAST_ACTION = "com.mikesun258.activitymonitor.EVENT"
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         try {
+            // Hook Activity.onCreate
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
+                lpparam.classLoader,
                 "onCreate",
                 Bundle::class.java,
                 object : XC_MethodHook() {
@@ -24,44 +26,46 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                         val act = param.thisObject as Activity
                         val pkg = act.packageName
                         val cls = act.javaClass.name
-                        val msg = "OnCreate | $pkg / $cls"
-                        Log.d(TAG, msg)
+                        Log.d(TAG, "OnCreate | $pkg / $cls")
                         sendEventBroadcast(act, pkg, cls, "onCreate")
                     }
                 }
             )
 
+            // Hook Activity.onResume（修正了参数错误）
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
+                lpparam.classLoader,
+                "onResume",
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
                         val act = param.thisObject as Activity
                         val pkg = act.packageName
                         val cls = act.javaClass.name
-                        val msg = "OnResume | $pkg / $cls"
-                        Log.d(TAG, msg)
+                        Log.d(TAG, "OnResume | $pkg / $cls")
                         sendEventBroadcast(act, pkg, cls, "onResume")
                     }
                 }
             )
 
+            // Hook Activity.onPause
             XposedHelpers.findAndHookMethod(
                 Activity::class.java,
+                lpparam.classLoader,
                 "onPause",
                 object : XC_MethodHook() {
                     override fun afterHookedMethod(param: MethodHookParam) {
                         val act = param.thisObject as Activity
                         val pkg = act.packageName
                         val cls = act.javaClass.name
-                        val msg = "OnPause  | $pkg / $cls"
-                        Log.d(TAG, msg)
+                        Log.d(TAG, "OnPause | $pkg / $cls")
                         sendEventBroadcast(act, pkg, cls, "onPause")
                     }
                 }
             )
 
         } catch (e: Throwable) {
-            Log.e(TAG, "Hook failed: ${lpparam.packageName}", e)
+            Log.e(TAG, "Hook failed for package: ${lpparam.packageName}", e)
         }
     }
 
@@ -75,4 +79,3 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
         activity.sendBroadcast(intent)
     }
 }
-
