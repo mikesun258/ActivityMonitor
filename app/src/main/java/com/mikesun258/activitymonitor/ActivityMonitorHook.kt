@@ -1,4 +1,4 @@
-package com.mikesun258.activitymonitor
+ package com.mikesun258.activitymonitor
 
 import android.app.Activity
 import android.content.Intent
@@ -22,7 +22,7 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
         try {
             val activityClass = lpparam.classLoader.loadClass("android.app.Activity")
 
-            // Hook onCreate（页面创建时）
+            // 1. Hook onCreate（页面创建时）
             XposedBridge.hookAllMethods(activityClass, "onCreate", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val act = param.thisObject as Activity
@@ -30,7 +30,15 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             })
 
-            // Hook onResume（页面切到前台时）
+            // 2. Hook onStart（页面可见时）
+            XposedBridge.hookAllMethods(activityClass, "onStart", object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam) {
+                    val act = param.thisObject as Activity
+                    sendBroadcast(act, "onStart")
+                }
+            })
+
+            // 3. Hook onResume（页面可交互时，前台焦点）
             XposedBridge.hookAllMethods(activityClass, "onResume", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val act = param.thisObject as Activity
@@ -38,11 +46,19 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
                 }
             })
 
-            // Hook onPause（页面切到后台时）
+            // 4. Hook onPause（页面暂停时，失去焦点）
             XposedBridge.hookAllMethods(activityClass, "onPause", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val act = param.thisObject as Activity
                     sendBroadcast(act, "onPause")
+                }
+            })
+
+            // 5. Hook onRestart（页面从后台切回前台时）
+            XposedBridge.hookAllMethods(activityClass, "onRestart", object : XC_MethodHook() {
+                override fun afterHookedMethod(param: MethodHookParam) {
+                    val act = param.thisObject as Activity
+                    sendBroadcast(act, "onRestart")
                 }
             })
 
