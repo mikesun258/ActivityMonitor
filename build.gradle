@@ -1,8 +1,7 @@
-// 仅保留 buildscript 部分，删除 allprojects 块（仓库已迁移到settings.gradle）
 buildscript {
     ext.kotlin_version = "1.9.0"
     repositories {
-        // 仅保留插件依赖的仓库，不再定义项目依赖仓库
+        // 插件仓库
         google()
         mavenCentral()
         // 国内镜像加速
@@ -17,7 +16,6 @@ buildscript {
     }
 }
 
-// 移除原有的 allprojects 块！
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
