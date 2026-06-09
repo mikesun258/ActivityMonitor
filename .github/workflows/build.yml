@@ -38,9 +38,9 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # 移除失效的 ghproxy 代理，改用 Gradle 官方仓库 + 项目内镜像配置
+      # 移除了不兼容的 --no-offline 参数
       - name: Build APK
-        run: ./gradlew clean assembleRelease --no-daemon --stacktrace --no-offline
+        run: ./gradlew clean assembleRelease --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
