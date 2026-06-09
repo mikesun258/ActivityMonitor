@@ -1,8 +1,8 @@
 package com.mikesun258.activitymonitor
 
 import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
-import android.os.Bundle
 import android.util.Log
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
@@ -11,7 +11,13 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
 
 class ActivityMonitorHook : IXposedHookLoadPackage {
     private val TAG = "ActivityMonitor"
-    private val BROADCAST_ACTION = "com.mikesun258.activitymonitor.EVENT"
+
+    // 每个状态对应一个不同的 Broadcast Action
+    private val BROADCAST_ACTION_CREATE = "com.mikesun258.activitymonitor.EVENT1"  // onCreate
+    private val BROADCAST_ACTION_START  = "com.mikesun258.activitymonitor.EVENT2"  // onStart
+    private val BROADCAST_ACTION_RESUME = "com.mikesun258.activitymonitor.EVENT3"  // onResume
+    private val BROADCAST_ACTION_PAUSE  = "com.mikesun258.activitymonitor.EVENT4"  // onPause
+    private val BROADCAST_ACTION_STOP   = "com.mikesun258.activitymonitor.EVENT5"  // onStop
 
     init {
         Log.i(TAG, "✅ 模块已被 LSPosed 加载！")
@@ -20,45 +26,45 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         Log.i(TAG, "📦 正在 Hook 包: ${lpparam.packageName}")
         try {
-            val activityClass = lpparam.classLoader.loadClass("android.app.Activity")
+            val instrumentationClass = lpparam.classLoader.loadClass("android.app.Instrumentation")
 
-            // 1. Hook onCreate（页面创建时）
-            XposedBridge.hookAllMethods(activityClass, "onCreate", object : XC_MethodHook() {
+            // 1. onCreate → EVENT1
+            XposedBridge.hookAllMethods(instrumentationClass, "callActivityOnCreate", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val act = param.thisObject as Activity
-                    sendBroadcast(act, "onCreate")
+                    val act = param.args[0] as Activity
+                    sendBroadcast(act, BROADCAST_ACTION_CREATE, "onCreate")
                 }
             })
 
-            // 2. Hook onStart（页面可见时）
-            XposedBridge.hookAllMethods(activityClass, "onStart", object : XC_MethodHook() {
+            // 2. onStart → EVENT2
+            XposedBridge.hookAllMethods(instrumentationClass, "callActivityOnStart", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val act = param.thisObject as Activity
-                    sendBroadcast(act, "onStart")
+                    val act = param.args[0] as Activity
+                    sendBroadcast(act, BROADCAST_ACTION_START, "onStart")
                 }
             })
 
-            // 3. Hook onResume（页面可交互/前台焦点时）
-            XposedBridge.hookAllMethods(activityClass, "onResume", object : XC_MethodHook() {
+            // 3. onResume → EVENT3
+            XposedBridge.hookAllMethods(instrumentationClass, "callActivityOnResume", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val act = param.thisObject as Activity
-                    sendBroadcast(act, "onResume")
+                    val act = param.args[0] as Activity
+                    sendBroadcast(act, BROADCAST_ACTION_RESUME, "onResume")
                 }
             })
 
-            // 4. Hook onPause（页面暂停/失去焦点时）
-            XposedBridge.hookAllMethods(activityClass, "onPause", object : XC_MethodHook() {
+            // 4. onPause → EVENT4
+            XposedBridge.hookAllMethods(instrumentationClass, "callActivityOnPause", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val act = param.thisObject as Activity
-                    sendBroadcast(act, "onPause")
+                    val act = param.args[0] as Activity
+                    sendBroadcast(act, BROADCAST_ACTION_PAUSE, "onPause")
                 }
             })
 
-            // 5. Hook onRestart（页面从后台切回前台时）
-            XposedBridge.hookAllMethods(activityClass, "onRestart", object : XC_MethodHook() {
+            // 5. onStop → EVENT5
+            XposedBridge.hookAllMethods(instrumentationClass, "callActivityOnStop", object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val act = param.thisObject as Activity
-                    sendBroadcast(act, "onRestart")
+                    val act = param.args[0] as Activity
+                    sendBroadcast(act, BROADCAST_ACTION_STOP, "onStop")
                 }
             })
 
@@ -67,16 +73,15 @@ class ActivityMonitorHook : IXposedHookLoadPackage {
         }
     }
 
-    private fun sendBroadcast(activity: Activity, type: String) {
+    private fun sendBroadcast(activity: Activity, action: String, type: String) {
         val pkgName = activity.packageName
         val actName = activity.javaClass.name
-        Log.d(TAG, "$type | $pkgName / $actName")
+        Log.d(TAG, "$type ($action) | $pkgName / $actName")
 
-        val intent = Intent(BROADCAST_ACTION).apply {
+        val intent = Intent(action).apply {
             putExtra("pkg_name", pkgName)
             putExtra("act_name", actName)
             putExtra("event_type", type)
-            // 已移除 setPackage 限制，确保 MacroDroid 可以接收到广播
         }
         activity.sendBroadcast(intent)
     }
