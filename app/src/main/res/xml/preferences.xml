@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:key="enable_activity_monitor"
+        android:title="启用 Activity 页面监控"
+        android:summary="@string/tip_activity"
+        android:defaultValue="true" />
+
+    <SwitchPreference
+        android:key="enable_video_monitor"
+        android:title="启用 短视频滑动监控"
+        android:summary="@string/tip_video"
+        android:defaultValue="true" />
+
+</PreferenceScreen>
+
