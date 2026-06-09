@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 清理旧缓存，避免损坏缓存导致依赖解析失败
+      # 清理旧缓存，避免缓存污染
       - name: Clean old Gradle cache
         run: |
           rm -rf ~/.gradle/caches
@@ -39,7 +39,7 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # 禁用离线模式 + 全局网络代理，加速访问 Google Maven
+      # 禁用离线 + 代理加速拉取 Google Maven 依赖
       - name: Build APK
         run: ./gradlew clean assembleRelease --no-daemon --stacktrace --no-offline
         env:
