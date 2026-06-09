@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">监控总设置</string>
+    <string name="tip_activity">开启后监控所有应用 Activity 页面切换</string>
+    <string name="tip_video">开启后监控短视频 App 滑动切换视频</string>
+</resources>
+
