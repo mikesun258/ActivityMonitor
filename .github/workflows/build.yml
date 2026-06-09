@@ -12,7 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 清理旧缓存，避免缓存污染
       - name: Clean old Gradle cache
         run: |
           rm -rf ~/.gradle/caches
@@ -39,16 +38,9 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
 
-      # 禁用离线 + 代理加速拉取 Google Maven 依赖
+      # 移除失效的 ghproxy 代理，改用 Gradle 官方仓库 + 项目内镜像配置
       - name: Build APK
         run: ./gradlew clean assembleRelease --no-daemon --stacktrace --no-offline
-        env:
-          GRADLE_OPTS: >
-            -Dhttp.proxyHost=mirror.ghproxy.com
-            -Dhttp.proxyPort=80
-            -Dhttps.proxyHost=mirror.ghproxy.com
-            -Dhttps.proxyPort=80
-            -Dorg.gradle.jvmargs=-Xmx2048m
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
