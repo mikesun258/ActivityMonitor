@@ -4,14 +4,13 @@
     <SwitchPreference
         android:key="enable_activity_monitor"
         android:title="启用 Activity 页面监控"
-        android:summary="@string/tip_activity"
+        android:summary="开启后监控所有应用 Activity 页面切换"
         android:defaultValue="true" />
 
     <SwitchPreference
         android:key="enable_video_monitor"
         android:title="启用 短视频滑动监控"
-        android:summary="@string/tip_video"
+        android:summary="开启后监控短视频 App 滑动切换视频"
         android:defaultValue="true" />
 
 </PreferenceScreen>
-
